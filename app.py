@@ -42,6 +42,7 @@ def create_app(db_url=None):
             return {"admin": True}
         return {"admin": False}
     
+    
     @jwt.expired_token_loader
     def expired_token_callback(jwt_header, jwt_payload):
         return (
