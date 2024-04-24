@@ -1,5 +1,4 @@
 from flask import Flask, jsonify
-from flask_migrate import Migrate
 from flask_smorest import Api
 from flask_jwt_extended import JWTManager
 import os
