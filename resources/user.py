@@ -15,30 +15,26 @@ from schemas import UserSchema
 
 blp = Blueprint("users", __name__, description="Operations on Users")
 
+
 @blp.route("/register")
 class UserRegister(MethodView):
-    def get(self):
-        return render_template('register.html')  # Render the registration form HTML template
-    
     @blp.arguments(UserSchema)
     def post(self, user_data):
         if UserModel.query.filter(UserModel.username==user_data["username"]).first():
             abort(409, message="A user with that username already exists")
             
         user = UserModel(
-            username=user_data["username"],
-            password=pbkdf2_sha256.hash(user_data["password"])
+            username = user_data["username"],
+            password = pbkdf2_sha256.hash(user_data["password"])
         )
         db.session.add(user)
         db.session.commit()
         
         return {"message": "User created successfully"}, 201
     
+   
 @blp.route("/login")
 class Login(MethodView):
-    def get(self):
-        return render_template('login.html')  # Render the login form HTML template
-    
     @blp.arguments(UserSchema)
     def post(self, user_data):
         user = UserModel.query.filter(UserModel.username == user_data["username"]).first()
@@ -61,6 +57,7 @@ class Token_refresh(MethodView):
         db.session.add(blocklist_entry)
         db.session.commit()
         return {"access_token": new_token}
+            
 
 @blp.route("/logout")
 class UserLogout(MethodView):
@@ -71,6 +68,7 @@ class UserLogout(MethodView):
         db.session.add(blocklist_entry)
         db.session.commit()
         return {"message": "Successfully logged out"}, 200
+
 
 @blp.route("/user/<int:user_id>")
 class User(MethodView):
