@@ -1,9 +1,9 @@
 flask
 flask-smorest
 python-dotenv
-gunicorn
 sqlalchemy
 flask-sqlalchemy
 flask-jwt-extended
 passlib
-flask_migrate
+flask-migrate
+gunicorn
