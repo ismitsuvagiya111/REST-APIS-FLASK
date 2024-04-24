@@ -1,11 +1,13 @@
-FROM python:3.10
-EXPOSE 5000
-WORKDIR /app
-COPY ./requirements.txt requirements.txt
-RUN pip install --no-cache-dir --upgrade -r requirements.txt
-COPY . .
-# RUN flask db upgrade
-CMD ["flask", "run", "--host", "0.0.0.0"]
+# FROM python:3.10
+# EXPOSE 5000
+# WORKDIR /app
+# COPY ./requirements.txt requirements.txt
+# RUN pip install --no-cache-dir --upgrade -r requirements.txt
+# COPY . .
+# CMD ["flask", "run", "--host", "0.0.0.0"]
+
+
+
 
 # FROM python:3.8-slim-buster
 
@@ -20,14 +22,8 @@ CMD ["flask", "run", "--host", "0.0.0.0"]
 # CMD ["python3", "app.py"]
 
 
-# FROM python:3.10
-# COPY . /app
-# WORKDIR /app
-# RUN pip install -r requirements.txt
-# EXPOSE 5000
-# # COPY . .
-# CMD gunicorn --workers=4 --bind 0.0.0.0:5000 app:app
-
-
-
-
+FROM python:3.10
+WORKDIR /app
+COPY . .
+RUN pip install -r requirements.txt
+CMD ["gunicorn", "--workers=4", "--bind", "0.0.0.0:5000", "app:app"]
