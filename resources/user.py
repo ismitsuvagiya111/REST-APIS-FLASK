@@ -8,7 +8,7 @@ from flask_jwt_extended import (
     get_jwt_identity
 )
 from passlib.hash import pbkdf2_sha256
-
+from flask import render_template
 from db import db
 from models import UserModel, BlocklistModel
 from schemas import UserSchema
@@ -30,7 +30,7 @@ class UserRegister(MethodView):
         db.session.add(user)
         db.session.commit()
         
-        return {"message": "User created successfully"}, 201
+        return {"message": "User created successfully"}, 201,render_template
     
    
 @blp.route("/login")
