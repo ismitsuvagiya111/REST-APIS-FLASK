@@ -1,7 +1,6 @@
 from flask import Flask, jsonify
-from flask_migrate import Migrate, upgrade
+from flask_migrate import Migrate
 from flask_smorest import Api
-from dotenv import load_dotenv
 from flask_jwt_extended import JWTManager
 import os
 from db import db
@@ -17,7 +16,6 @@ from resources.user import blp as UserBlueprint
 
 def create_app(db_url=None):
     app = Flask(__name__)
-    load_dotenv()
     app.config["PROPAGATE_EXCEPTIONS"] = True
     app.config["API_TITLE"] = "Stores REST API"
     app.config["API_VERSION"] = "v1"
@@ -102,15 +100,5 @@ def create_app(db_url=None):
     api.register_blueprint(StoreBlueprint)
     api.register_blueprint(TagBlueprint)
     api.register_blueprint(UserBlueprint)
-
-    @app.cli.command()
-    def db_init():
-        db.create_all()
-        print("Database tables created.")
-
-    @app.cli.command()
-    def db_upgrade():
-        upgrade()
-        print("Database upgrade completed.")
 
     return app
