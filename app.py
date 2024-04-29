@@ -8,6 +8,7 @@ from db import db
 from models import BlocklistModel
 import models
 import secrets
+import  psycopg2
 
 from resources.item import blp as ItemBlueprint
 from resources.store import blp as StoreBlueprint
