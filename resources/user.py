@@ -7,8 +7,6 @@ from flask_jwt_extended import (
     create_refresh_token,
     get_jwt_identity
 )
-from werkzeug.security import generate_password_hash
-
 from passlib.hash import pbkdf2_sha256
 from flask import render_template, request, jsonify
 from db import db
@@ -41,7 +39,7 @@ class UserRegister(MethodView):
         # Create a new user
         new_user = UserModel(
             username=username,
-            password=generate_password_hash(password)
+            password=pbkdf2_sha256.hash(password)
         )
         
         # Add the new user to the database
