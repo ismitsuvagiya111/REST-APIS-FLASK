@@ -22,7 +22,7 @@ class UserRegister(MethodView):
     def get(self):
         return render_template('register.html')
 
-    @blp.arguments(UserSchema)
+    #@blp.arguments(UserSchema)
     def post(self):
         # Get user data from the form
         username = request.form.get('username')
