@@ -36,10 +36,11 @@ class UserRegister(MethodView):
         if password != confirm_password:
             return jsonify({"error": "Passwords do not match"}), 400
 
+        hashed_password = pbkdf2_sha256.hash(password)
         # Create a new user
         new_user = UserModel(
             username=username,
-            password=pbkdf2_sha256.hash(password)
+            password=hashed_password
         )
         
         # Add the new user to the database
