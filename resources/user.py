@@ -7,8 +7,10 @@ from flask_jwt_extended import (
     create_refresh_token,
     get_jwt_identity
 )
+from werkzeug.security import generate_password_hash
+
 from passlib.hash import pbkdf2_sha256
-from flask import render_template
+from flask import render_template, request, jsonify
 from db import db
 from models import UserModel, BlocklistModel
 from schemas import UserSchema
@@ -16,22 +18,37 @@ from schemas import UserSchema
 blp = Blueprint("users", __name__, description="Operations on Users")
 
 
-@blp.route("/register")
+
+@blp.route("/register", methods=['GET', 'POST'])
 class UserRegister(MethodView):
-    @blp.arguments(UserSchema)
-    def post(self, user_data):
-        if UserModel.query.filter(UserModel.username==user_data["username"]).first():
-            abort(409, message="A user with that username already exists")
-            
-        user = UserModel(
-            username = user_data["username"],
-            password = pbkdf2_sha256.hash(user_data["password"])
+    def get(self):
+        return render_template('register.html')
+
+    def post(self):
+        # Get user data from the form
+        username = request.form.get('username')
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+
+        # Check if username already exists
+        if UserModel.query.filter_by(username=username).first():
+            return jsonify({"error": "Username already exists"}), 409
+
+        # Check if passwords match
+        if password != confirm_password:
+            return jsonify({"error": "Passwords do not match"}), 400
+
+        # Create a new user
+        new_user = UserModel(
+            username=username,
+            password=generate_password_hash(password)
         )
-        db.session.add(user)
-        db.session.commit()
         
-        return {"message": "User created successfully"}, 201
-    
+        # Add the new user to the database
+        db.session.add(new_user)
+        db.session.commit()
+
+        return jsonify({"message": "User created successfully"}), 201
    
 @blp.route("/login")
 class Login(MethodView):
